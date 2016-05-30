@@ -7,6 +7,8 @@ import cucumber.api.java.en.When;
 import lib.Init;
 import org.openqa.selenium.WebDriver;
 import ru.omen.app.pages.CurrencyConverterPage;
+import ru.yandex.qatools.allure.Allure;
+import ru.yandex.qatools.allure.events.AddParameterEvent;
 
 import java.text.ParseException;
 
@@ -31,6 +33,7 @@ public class ConverterStepsDefinitions {
         driver.get(url);
         page = new CurrencyConverterPage(); // step 1
         System.out.println("Open URL = " + url);
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Страница " + url, "Открыта"));
     }
 
     @Given("^Проверить дату в блоке 'Конвертер валют'$")

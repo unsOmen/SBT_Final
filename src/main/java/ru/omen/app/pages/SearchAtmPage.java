@@ -8,6 +8,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.yandex.qatools.allure.Allure;
+import ru.yandex.qatools.allure.events.AddParameterEvent;
 
 import java.text.ParseException;
 import java.util.List;
@@ -47,13 +49,16 @@ public class SearchAtmPage extends AnyPages {
 
     public void setCheckboxFilial(boolean value) throws InterruptedException,WebDriverException {
         checkBox(checkboxFilial, getElement(labelFilial), value);
-        Thread.sleep(5000);
+        Thread.sleep(10000);
 
-        if (value)
+        if (value) {
             Assert.assertTrue("Филиалы не отображаются!", checkClassResult(CLASS_FILIAL_NAME));
-        else
+            Allure.LIFECYCLE.fire(new AddParameterEvent("Филиалы", "Выбраны и отображены на странице"));
+        }
+        else {
             Assert.assertFalse("Филиалы отображаются!", checkClassResult(CLASS_FILIAL_NAME));
-
+            Allure.LIFECYCLE.fire(new AddParameterEvent("Филиалы", "Отключены и не отображены на странице"));
+        }
         System.out.println("setCheckboxFilial_OK");
     }
 
@@ -75,8 +80,10 @@ public class SearchAtmPage extends AnyPages {
                         getMetreDistance(lastElement.getText()) <= getMetreDistance(element.getText()));
             }
             System.out.println("\t"+getMetreDistance(element.getText()));
+            Allure.LIFECYCLE.fire(new AddParameterEvent("Расстояние до объекта", new Float(getMetreDistance(element.getText())).toString()));
             lastElement = element;
         }
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Все объекты находятся в порядце возврастания", "Проверено"));
         System.out.println("checkLocations_OK");
     }
 
@@ -94,6 +101,7 @@ public class SearchAtmPage extends AnyPages {
         checkBox(checkboxTerminal, getElement(lableTerminal), value);
         Thread.sleep(2000);
         Assert.assertTrue("Терминалы не отображаются!", checkClassResult(CLASS_TERMINAL_NAME));
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Терминалы", "Выбраны и отображены на странице"));
 
         System.out.println("setCheckboxTerminal_OK");
     }
@@ -104,6 +112,8 @@ public class SearchAtmPage extends AnyPages {
         Thread.sleep(2000);
         int afterSize = listDistanceResult.size();
         Assert.assertTrue("Количество элементов в результате не изменилось", beforeSize<afterSize);
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Кнопка 'Показать еще' нажата, количество элементов изменилось",
+                "До: " + beforeSize + ", после: " +afterSize));
         checkLocations();
 
         System.out.println("showMoreResult_OK");

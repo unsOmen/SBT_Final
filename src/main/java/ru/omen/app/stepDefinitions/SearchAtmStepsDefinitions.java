@@ -11,6 +11,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import ru.omen.app.pages.SearchAtmPage;
+import ru.yandex.qatools.allure.Allure;
+import ru.yandex.qatools.allure.events.AddParameterEvent;
 
 /**
  * Created by OmeN on 23.05.2016.
@@ -33,6 +35,7 @@ public class SearchAtmStepsDefinitions {
         driver.get(url);
         page = new SearchAtmPage(); // step 1
         System.out.println("Open URL = " + url);
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Страница " + url, "Открыта"));
     }
 
     @When("^Выделить чекбокс Отделения, Проверить информацию в блоке Ближайшие к вам$")

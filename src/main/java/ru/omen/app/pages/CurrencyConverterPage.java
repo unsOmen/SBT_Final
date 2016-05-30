@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.yandex.qatools.allure.Allure;
+import ru.yandex.qatools.allure.events.AddParameterEvent;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -76,6 +78,7 @@ public class CurrencyConverterPage extends AnyPages {
                 dateFormat.format(dateFormat.parse(txtCurConverterDate.getText())).equals(txtCurConverterDate.getText()));
 
         System.out.println("date correct_OK");
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Дата: " + txtCurConverterDate.getText(), "В формате ДД ММММ ГГГГ"));
     }
 
     public void checkElements() {
@@ -98,6 +101,7 @@ public class CurrencyConverterPage extends AnyPages {
         Assert.assertTrue("Неверный формат строки " + txtConvertResult.get(6).getText(), txtConvertResult.get(6).getText().matches("[A-Z][A-Z][A-Z]"));
 
         System.out.println("all elements displayed_OK");
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Элементы на странице", "Отображены"));
     }
 
     /**
@@ -119,6 +123,7 @@ public class CurrencyConverterPage extends AnyPages {
         setText(fieldsInputCurrency.get(0), countIN);
         Assert.assertTrue("Неверное значение 'Поменять'! Необходимо: " + countIN
                 + ", текущее: " + fieldsInputCurrency.get(0).getAttribute("value"), fieldsInputCurrency.get(0).getAttribute("value").equals(countIN.toString()));
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Установлено значение 'Поменять'", fieldsInputCurrency.get(0).getAttribute("value")));
 
         System.out.println("currency selected_OK");
     }
@@ -126,8 +131,10 @@ public class CurrencyConverterPage extends AnyPages {
     public void checkCurrencyFields(String currencyIN, String currencyOUT) {
         Assert.assertTrue("Выбрана неверная валюта, нужно: " + currencyIN
                 +", выбрана: " + fieldsSelectCurrency.get(0).getText(), fieldsSelectCurrency.get(0).getText().trim().equals(currencyIN));
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Установлена валюта 'Поменять'", currencyIN));
         Assert.assertTrue("Выбрана неверная валюта, нужно: " + currencyOUT
                 +", выбрана: " + fieldsSelectCurrency.get(1).getText(), fieldsSelectCurrency.get(1).getText().trim().equals(currencyOUT));
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Установлена валюта 'На'", currencyOUT));
     }
 
     public void convertCurrency() {
@@ -137,12 +144,12 @@ public class CurrencyConverterPage extends AnyPages {
         BigDecimal result = countIN.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
 
         System.out.println("\tin = "+countIN+ "\n\trate = " + rate + "\n\tout = " + countOUT);
-        //try {
-            Assert.assertTrue("Неверный результат: " + result + ", ", result.equals(countOUT));
-        //} catch (Throwable e) {
-            //e.printStackTrace();
-        //}
-
+        try {
+            Assert.assertTrue("Неверный результат: " + result + ", в поле - " + countOUT, result.equals(countOUT));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Результат конвертации", result.toString()));
         System.out.println("convert correct_OK");
     }
 }

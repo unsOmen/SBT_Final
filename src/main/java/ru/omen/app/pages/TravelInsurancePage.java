@@ -8,6 +8,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.yandex.qatools.allure.Allure;
+import ru.yandex.qatools.allure.events.AddParameterEvent;
 
 import java.util.List;
 
@@ -90,6 +92,7 @@ public class TravelInsurancePage extends AnyPages {
                     e.printStackTrace();
                 } finally {
                     Assert.assertEquals(elm.getAttribute("class").contains("active"), false);
+                    Allure.LIFECYCLE.fire(new AddParameterEvent("Вкладка " + elm.getText(), "Недоступна для нажатия"));
                 }
             }
         }
@@ -107,6 +110,7 @@ public class TravelInsurancePage extends AnyPages {
         float sum = getSumm();
         Assert.assertTrue("Большая разница суммы: sum = " + sum + " | need_sum = " + need_sum,
                 Math.abs(sum - need_sum) <= difference);
+        Allure.LIFECYCLE.fire(new AddParameterEvent("Итоговая стоимость должна быть: " + need_sum, new Float(sum).toString()));
         System.out.println("new checkSum_OK");
     }
 
